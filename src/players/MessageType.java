@@ -1,0 +1,18 @@
+package players;
+
+public enum MessageType {
+    JOIN,
+    LEAVE,
+    START,
+    SUBMIT_QUESTION,
+    SUBMIT_ANSWER,
+    SUBMIT_VOTE,
+    SEND_USERNAME,
+    SEND_ANSWER,
+    SEND_QUESTION,
+    TIMEOUT,
+    NEXT_ROUND,
+    NEXT_STEP,
+    NEXT_QUESTION,
+    GAME_END
+}
