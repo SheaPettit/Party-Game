@@ -1,23 +1,51 @@
-package players;
+package network;
 import java.io.Serializable;
-import question_answer.*;
-import rounds.*;
+import players.*;
 
 public class Message implements Serializable {
-    private String message;
-    private String player;
+    private String response;
+    private String playerName;
+    private String data;
+    private MessageType type;
+    private Player player;
+    private boolean isHost;
 
-    public Message(String message, String player) {
-        this.message = message;
+    public Message(MessageType type, String playerName) {
+        this.type = type;
+        this.playerName = playerName;
+    }
+
+    public Message(MessageType type) {
+        this.type = type;
+    }
+
+    public Message(MessageType type, Player player, boolean isHost) {
+        this.type = type;
         this.player = player;
+        this.isHost = isHost;
     }
 
-    public String getMessage() {
-        return message;
+    public String getResponse() {
+        return response;
     }
 
-    public String getPlayer() {
+    public Player getPlayer() {
         return player;
     }
     
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public MessageType getType() {
+        return type;
+    }
+
+    public boolean isHost() {
+        return isHost;
+    }
 }

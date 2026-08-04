@@ -1,4 +1,4 @@
-package players;
+package network;
 
 public enum MessageType {
     JOIN,
@@ -14,5 +14,10 @@ public enum MessageType {
     NEXT_ROUND,
     NEXT_STEP,
     NEXT_QUESTION,
-    GAME_END
+    GAME_END,
+    CONNECT,
+    REQUEST_NAME,
+    NAME_RESPONSE,
+    INVALID_NAME,
+    VALID_NAME
 }
