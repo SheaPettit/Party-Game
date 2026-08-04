@@ -56,12 +56,15 @@ public class Client{
                 message = new Message(MessageType.START);
                 oos.writeObject(message);
             }
-            cont = false;
+            cont = true;
             while(cont) {
                 fromServer = (Message) ois.readObject();
                 if(fromServer.getType() != MessageType.START) continue;
+                System.out.println("Game started!");
                 cont = false;
             }
+            message = new Message(MessageType.LEAVE);
+            oos.writeObject(message);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

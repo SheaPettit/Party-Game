@@ -11,17 +11,19 @@ public class ClientHandler implements Runnable{
     private Socket clientSocket;
     private Server server;
     private Player player;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+    private boolean connected;
 
     public ClientHandler(Socket clientSocket, Server server) {
         this.clientSocket = clientSocket;
         this.server = server;
+        this.connected = true;
     }
 
     @Override
     public void run() {
         System.out.println("Client connected: " + clientSocket.getInetAddress().getHostAddress());
-        ObjectInputStream ois = null;
-        ObjectOutputStream oos = null;
         try {
             InputStream input = clientSocket.getInputStream();
             ois = new ObjectInputStream(input);
@@ -35,10 +37,9 @@ public class ClientHandler implements Runnable{
                 switch (fromClient.getType()) {
                     case NAME_RESPONSE:
                         String playerName = fromClient.getPlayerName();
-                        if(server.addPlayer(playerName)) {
-                            message = new Message(MessageType.VALID_NAME);
+                        if(server.addPlayer(playerName, this)) {
+                            message = new Message(MessageType.VALID_NAME, server.getPlayerByName(playerName));
                             oos.writeObject(message);
-                            cont = false;
                             this.player = server.getPlayerByName(playerName);
                         } else {      
                             message = new Message(MessageType.INVALID_NAME);
@@ -54,15 +55,20 @@ public class ClientHandler implements Runnable{
                         System.out.println("Player " + player.getName() + " is attempting to start the game.");
                         if(player.isServerHost()) {
                             message = new Message(MessageType.START);
-                            oos.writeObject(message);
+                            server.sendToAllClients(message);
                             System.out.println("Game started by host " + player.getName() + ".");
                         }
+                        break;
+                    case LEAVE:
+                        System.out.println("Player " + player.getName() + " has disconnected.");
+                        cont = false;
                         break;
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            this.connected = false;
             try {
                 if (clientSocket != null) {
                     clientSocket.close();
@@ -70,6 +76,17 @@ public class ClientHandler implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+    public void sendMessage(Message message) {
+        if(!connected) {
+            System.out.println("Client is not connected. Cannot send message.");
+            return;
+        }
+        try {
+            oos.writeObject(message);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

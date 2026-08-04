@@ -19,10 +19,9 @@ public class Message implements Serializable {
         this.type = type;
     }
 
-    public Message(MessageType type, Player player, boolean isHost) {
+    public Message(MessageType type, Player player) {
         this.type = type;
         this.player = player;
-        this.isHost = isHost;
     }
 
     public String getResponse() {
