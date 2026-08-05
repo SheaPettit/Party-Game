@@ -1,5 +1,8 @@
 package question_answer;
-public class QAPair {
+
+import java.io.Serializable;
+
+public class QAPair implements Serializable {
     private Question question;
     private Answer answer;
     private boolean answered;
