@@ -3,13 +3,17 @@ package network;
 import question_answer.QAPair;
 
 public interface UserInterface {
-    // void lobby_create_scene();
-    // void lobby_join_scene();
-    void naming_scene();
-    void start_scene();
-    void qa_1_scene();
-    void qa_2_scene(QAPair qaPair);
-    void vote_scene(QAPair qaPair);
-    void vote_result_scene(float percentage);
-    void end_scene();
+    //public void lobby_create_scene();
+    //public void lobby_join_scene();
+    public String requestNameUI();
+    public void invalidNameUI();
+    public void validNameUI();
+    public String hostStartUI();
+    public void gameStartUI();
+    public void qa1UI();
+    public void qa2UI(QAPair qaPair);
+    public void voteUI(QAPair qaPair);
+    public void voteResultUI(float percentage);
+    public void endUI();
+    public void cleanup();
 }
