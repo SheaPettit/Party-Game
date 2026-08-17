@@ -4,6 +4,7 @@ public enum MessageType {
     JOIN,
     LEAVE,
     START,
+    START_RECEIVED,
     SUBMIT_QUESTION,
     SUBMIT_ANSWER,
     SUBMIT_VOTE,

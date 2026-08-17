@@ -59,6 +59,12 @@ public class ClientHandler implements Runnable{
                             System.out.println("Game started by host " + player.getName() + ".");
                         }
                         break;
+                    case SEND_QUESTION:
+                        String question = fromClient.getUserInput();
+                        System.out.println("Player " + player.getName() + " submitted a question: " + question);
+                        message = new Message(MessageType.SEND_QUESTION, question);
+                        server.sendToAllClients(message);
+                        break;
                     case LEAVE:
                         System.out.println("Player " + player.getName() + " has disconnected.");
                         cont = false;

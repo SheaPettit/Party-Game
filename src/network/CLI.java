@@ -5,10 +5,13 @@ import question_answer.*;
 
 public class CLI extends AbstractUI {
     private final Scanner scan;
+    private final CLIInputThread inputThread;
 
     public CLI(Client client) {
         super(client);
         scan = new Scanner(System.in);
+        inputThread = new CLIInputThread(this);
+        new Thread(inputThread).start();
     }
 
     public String requestNameUI() {
@@ -33,7 +36,9 @@ public class CLI extends AbstractUI {
         System.out.println("Game started!");
     }
 
-    public void qa1UI() {
+    public String qa1UI() {
+        System.out.print("Please submit a question: ");
+        return scan.nextLine();
     }
 
     public void qa2UI(QAPair qaPair) {
@@ -49,5 +54,14 @@ public class CLI extends AbstractUI {
     }
 
     public void cleanup() {
+    }
+
+    public void sendInputToClient(String input) {
+        client.inputReady(input);
+        inputThread.resetInput();
+    }
+    
+    public void requestAnswer() {
+       client.inputReady(inputThread.requestInput());
     }
 }

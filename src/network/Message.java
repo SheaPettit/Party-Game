@@ -5,7 +5,7 @@ import players.*;
 public class Message implements Serializable {
     private String response;
     private String playerName;
-    private String data;
+    private String userInput;
     private MessageType type;
     private Player player;
     private boolean isHost;
@@ -24,6 +24,12 @@ public class Message implements Serializable {
         this.player = player;
     }
 
+    public Message(MessageType type, String PlayerName, String userInput) {
+        this.type = type;
+        this.playerName = PlayerName;
+        this.userInput = userInput;
+    }
+
     public String getResponse() {
         return response;
     }
@@ -36,8 +42,8 @@ public class Message implements Serializable {
         return playerName;
     }
 
-    public String getData() {
-        return data;
+    public String getUserInput() {
+        return userInput;
     }
 
     public MessageType getType() {

@@ -12,7 +12,9 @@ public class Client{
     private ObjectOutputStream oos;
     private Player player;
     private boolean isHost;
-    private CLI cli;
+    private UserInterface cli;
+    private volatile boolean userInputReady;
+    private String userInput;
     public Client() {
         socket = null;
         ois = null;
@@ -63,6 +65,17 @@ public class Client{
                 cli.gameStartUI();
                 cont = false;
             }
+            cli.qa1UI();
+            userInputReady = false;
+            while(!userInputReady) {
+                Thread.sleep(100);
+                if(ois.available() > 0) {
+                    fromServer = (Message) ois.readObject();
+                    if(fromServer.getType() == MessageType.SUBMIT_QUESTION)
+                        cli.requestAnswer();
+                }
+            }
+            message = new Message(MessageType.SEND_QUESTION, player.getName(), userInput);
             message = new Message(MessageType.LEAVE);
             oos.writeObject(message);
         } catch (Exception e) {
@@ -79,5 +92,9 @@ public class Client{
             }
             cli.cleanup();
         }
+    }
+    public void inputReady(String input) {
+        this.userInput = input;
+        this.userInputReady = true;
     }
 }
