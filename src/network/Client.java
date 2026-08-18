@@ -12,19 +12,31 @@ public class Client{
     private ObjectOutputStream oos;
     private Player player;
     private boolean isHost;
-    private UserInterface cli;
+    private UserInterface ui;
     private volatile boolean userInputReady;
     private String userInput;
-    public Client() {
+    public Client(UIType uiType) {
         socket = null;
         ois = null;
         oos = null;
         player = null;
         isHost = false;
-        cli = new CLI(this);
+        switch(uiType) {
+            case CLI:
+                /*ui = new CLI(this);
+                break;*/
+            case WebUI:
+                /*ui = new WebUI(this);
+                break;*/
+            case GUI:
+            default:
+                ui = new GUI(this);
+                break;
+        }
     }
     public void Connect() throws IOException{
         System.out.println("Client is running...");
+        ui.buildUI();
         try {
             socket = new Socket("localhost", 8080);
             oos = new ObjectOutputStream(socket.getOutputStream());
@@ -36,14 +48,14 @@ public class Client{
                 fromServer = (Message) ois.readObject();
                 switch(fromServer.getType()) {
                     case MessageType.INVALID_NAME:
-                        cli.invalidNameUI();
+                        ui.invalidNameUI();
                     case MessageType.REQUEST_NAME:
-                        String name = cli.requestNameUI();
+                        String name = ui.requestNameUI();
                         message = new Message(MessageType.NAME_RESPONSE, name);
                         oos.writeObject(message);
                         break;
                     case MessageType.VALID_NAME:
-                        cli.validNameUI();
+                        ui.validNameUI();
                         cont = false;
                         player = fromServer.getPlayer();
                         isHost = player.isServerHost();
@@ -53,7 +65,7 @@ public class Client{
             if(isHost) {
                 String cmd = "";
                 while("start".compareTo(cmd.toLowerCase()) != 0) {
-                    cmd = cli.hostStartUI();
+                    cmd = ui.hostStartUI();
                 }
                 message = new Message(MessageType.START);
                 oos.writeObject(message);
@@ -62,17 +74,17 @@ public class Client{
             while(cont) {
                 fromServer = (Message) ois.readObject();
                 if(fromServer.getType() != MessageType.START) continue;
-                cli.gameStartUI();
+                ui.gameStartUI();
                 cont = false;
             }
-            cli.qa1UI();
+            ui.qa1UI();
             userInputReady = false;
             while(!userInputReady) {
                 Thread.sleep(100);
                 if(ois.available() > 0) {
                     fromServer = (Message) ois.readObject();
                     if(fromServer.getType() == MessageType.SUBMIT_QUESTION)
-                        cli.requestAnswer();
+                        ui.requestAnswer();
                 }
             }
             message = new Message(MessageType.SEND_QUESTION, player.getName(), userInput);
@@ -90,7 +102,7 @@ public class Client{
             if (oos != null) {
                 oos.close();
             }
-            cli.cleanup();
+            ui.cleanup();
         }
     }
     public void inputReady(String input) {

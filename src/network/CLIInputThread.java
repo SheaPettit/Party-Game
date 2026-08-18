@@ -3,6 +3,7 @@ package network;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Deprecated
 public class CLIInputThread implements Runnable {
     private final CLI cli;
     private final InputStreamReader inputReader;

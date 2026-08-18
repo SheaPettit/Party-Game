@@ -17,4 +17,5 @@ public interface UserInterface {
     public void endUI();
     public void cleanup();
     public void requestAnswer();
+    public void buildUI();
 }

@@ -3,6 +3,7 @@ package network;
 import java.util.Scanner;
 import question_answer.*;
 
+@Deprecated
 public class CLI extends AbstractUI {
     private final Scanner scan;
     private final CLIInputThread inputThread;
@@ -63,5 +64,7 @@ public class CLI extends AbstractUI {
     
     public void requestAnswer() {
        client.inputReady(inputThread.requestInput());
+    }
+    public void buildUI() {
     }
 }
