@@ -21,6 +21,7 @@ public class GameData {
     private boolean questionsOpen;
     private final Object lock;
     private boolean votingOpen;
+    private boolean phaseOneOver;
     private QAPair currentPair;
     private HashMap<QAPair, Integer> voteScores;
     public  GameData(Server server) {
@@ -71,6 +72,7 @@ public class GameData {
                     break;
             }
             votingOpen = false;
+            phaseOneOver = false;
         }
     }
     public void closePart1() {
@@ -83,6 +85,7 @@ public class GameData {
                     answersOpen = false;
                     break;
             }
+            phaseOneOver = true;
         }
     }
     public void openPart2() {
@@ -103,8 +106,10 @@ public class GameData {
             answersOpen = false;
         }
     }
-    public void addResponse(String playerName, String response, ResponseType rt) {
+    //Phase 1 response (Starting a QAPair)
+    private void addResponse(String playerName, String response, ResponseType rt) {
         synchronized (lock) {
+            if(phaseOneOver) return;
             switch (rt) {
                 case QUESTION:
                     if (!questionsOpen) return;
@@ -113,6 +118,28 @@ public class GameData {
             }
             Player player = players.get(playerName);
             round.addQAPair(player, response);
+            switch (rt) {
+                case QUESTION:
+                    if (!round.allQuestionsWritten()) return;
+                case ANSWER:
+                    if (!round.allAnswersGiven()) return;
+            }
+            gameThread.interruptThread();
+        }
+    }
+    //Phase 2 response (finishing a QAPair)
+    private void addResponse(String playerName, String otherPlayerName, String response, ResponseType rt) {
+        synchronized (lock) {
+            if (!phaseOneOver) return;
+            switch (rt) {
+                case QUESTION:
+                    if (!questionsOpen) return;
+                case ANSWER:
+                    if (!answersOpen) return;
+            }
+            Player player = players.get(playerName);
+            Player otherPlayer = players.get(otherPlayerName);
+            round.finishQAPair(player, otherPlayer, response);
             switch (rt) {
                 case QUESTION:
                     if (!round.allQuestionsWritten()) return;
