@@ -1,12 +1,15 @@
 package rounds;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import players.*;
 import question_answer.*;
 
 public class Round {
     private final HashMap<Player, QAPair> questionPlayer;
     private final HashMap<Player, QAPair> answerPlayer;
+    private final List<QAPair> qaPairs;
     private final int numPlayers;
     private final RoundsType round;
     public Round(int numPlayers, RoundsType round) {
@@ -14,6 +17,7 @@ public class Round {
         this.round = round;
         this.questionPlayer = new HashMap<>();
         this.answerPlayer = new HashMap<>();
+        this.qaPairs = new ArrayList<>();
     }
     public boolean allQuestionsWritten() {return (questionPlayer.size() == numPlayers);}
     public boolean allAnswersGiven() {return (answerPlayer.size() == numPlayers);}
@@ -30,6 +34,7 @@ public class Round {
         }
         QAPair qaPair = new QAPair(response, player.getName(), round);
         map.put(player, qaPair);
+        qaPairs.add(qaPair);
     }
     public void finishQAPair(Player player, Player otherPlayer, String response) {
         if(round == RoundsType.ONE) {
@@ -50,4 +55,6 @@ public class Round {
         }
         throw new IllegalArgumentException("Invalid ResponseType");
     }
+    public List<QAPair> getPairs() {return new ArrayList<>(qaPairs);}
+    public RoundsType getRoundType() {return this.round;}
 }

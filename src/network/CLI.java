@@ -15,9 +15,7 @@ public class CLI extends AbstractUI {
         new Thread(inputThread).start();
     }
 
-    public String requestNameUI() {
-        System.out.print("Enter name: ");
-        return scan.nextLine();
+    public void requestNameUI() {
     }
 
     public void invalidNameUI() {
@@ -28,18 +26,14 @@ public class CLI extends AbstractUI {
         System.out.println("Valid name. Welcome to the game!");
     }
 
-    public String hostStartUI() {
-        System.out.print("Type 'start' to start the game: ");
-        return scan.nextLine();
+    public void hostStartUI() {
     }
 
     public void gameStartUI() {
         System.out.println("Game started!");
     }
 
-    public String qa1UI() {
-        System.out.print("Please submit a question: ");
-        return scan.nextLine();
+    public void qa1UI() {
     }
 
     public void qa2UI(QAPair qaPair) {

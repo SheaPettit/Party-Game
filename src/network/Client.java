@@ -14,7 +14,7 @@ public class Client{
     private boolean isHost;
     private UserInterface ui;
     private volatile boolean userInputReady;
-    private String userInput;
+    private String input;
     public Client(UIType uiType) {
         socket = null;
         ois = null;
@@ -33,6 +33,7 @@ public class Client{
                 ui = new GUI(this);
                 break;
         }
+        input = "";
     }
     public void Connect() throws IOException{
         System.out.println("Client is running...");
@@ -50,8 +51,9 @@ public class Client{
                     case MessageType.INVALID_NAME:
                         ui.invalidNameUI();
                     case MessageType.REQUEST_NAME:
-                        String name = ui.requestNameUI();
-                        message = new Message(MessageType.NAME_RESPONSE, name);
+                        ui.requestNameUI();
+                        while(!input.isEmpty()){Thread.sleep(10);}
+                        message = new Message(MessageType.NAME_RESPONSE, input);
                         oos.writeObject(message);
                         break;
                     case MessageType.VALID_NAME:
@@ -63,9 +65,8 @@ public class Client{
                 }
             }
             if(isHost) {
-                String cmd = "";
-                while("start".compareTo(cmd.toLowerCase()) != 0) {
-                    cmd = ui.hostStartUI();
+                while("start".compareTo(input.toLowerCase()) != 0) {
+                    ui.hostStartUI();
                 }
                 message = new Message(MessageType.START);
                 oos.writeObject(message);
@@ -87,7 +88,7 @@ public class Client{
                         ui.requestAnswer();
                 }
             }
-            message = new Message(MessageType.SEND_QUESTION, player.getName(), userInput);
+            message = new Message(MessageType.SEND_QUESTION, player.getName(), input);
             message = new Message(MessageType.LEAVE);
             oos.writeObject(message);
         } catch (Exception e) {
@@ -106,7 +107,7 @@ public class Client{
         }
     }
     public void inputReady(String input) {
-        this.userInput = input;
+        this.input = input;
         this.userInputReady = true;
     }
 }

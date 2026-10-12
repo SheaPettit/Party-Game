@@ -1,5 +1,6 @@
 package network;
 
+import game.GameData;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,16 +9,18 @@ import players.*;
 
 public class Server{
     private ServerSocket serverSocket;
-    private GameThread gameThread;
+    private GameData gameData;
     private HashMap<Player, ClientHandler> playerToClient;
     public Server() {
         System.out.println("Server is running on port 8080...");
-        gameThread = new GameThread(this);
+        gameData = new GameData(this);
+        gameData.startGameThread();
         serverSocket = null;
         playerToClient = new HashMap<>();
     }
     public void start() throws IOException{
         serverSocket = new ServerSocket(8080);
+
         while (true) {
             Socket cs = serverSocket.accept();
             ClientHandler clientHandler = new ClientHandler(cs, this);
@@ -26,15 +29,15 @@ public class Server{
         }
     }
     public boolean addPlayer(String playerName, ClientHandler fromClient) {
-        boolean success = gameThread.addPlayer(playerName);
+        boolean success = gameData.addPlayer(playerName);
         if (success) {
-            Player player = gameThread.getPlayerByName(playerName);
+            Player player = gameData.getPlayerByName(playerName);
             playerToClient.put(player, fromClient);
         }
         return success;
     }
     public Player getPlayerByName(String playerName) {
-        return gameThread.getPlayerByName(playerName);
+        return gameData.getPlayerByName(playerName);
     }
     public void sendToAllClients(Message message) {
         for (ClientHandler clientHandler : playerToClient.values()) {
@@ -44,6 +47,9 @@ public class Server{
                 e.printStackTrace();
             }
         }
+    }
+    public boolean startGameThread() {
+        return gameData.startGameThread();
     }
 }
     

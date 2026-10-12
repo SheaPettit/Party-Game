@@ -54,6 +54,10 @@ public class ClientHandler implements Runnable{
                     case START:
                         System.out.println("Player " + player.getName() + " is attempting to start the game.");
                         if(player.isServerHost()) {
+                            if(!server.startGameThread()) {
+                                System.out.println("Thread failed to start.");
+                                break;
+                            } 
                             message = new Message(MessageType.START);
                             server.sendToAllClients(message);
                             System.out.println("Game started by host " + player.getName() + ".");
