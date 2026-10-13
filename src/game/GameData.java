@@ -20,6 +20,7 @@ public class GameData {
     private boolean answersOpen;
     private boolean questionsOpen;
     private final Object lock;
+    private final Object playerLock;
     private boolean votingOpen;
     private boolean phaseOneOver;
     private QAPair currentPair;
@@ -29,33 +30,38 @@ public class GameData {
         this.players = new HashMap<>();
         this.playerNames = new ArrayList<>();
         this.lock = new Object();
+        this.playerLock = new Object();
         this.gameThread = new GameThread(this);
         gt = null;
     }   
     public boolean addPlayer(String playerName) {
-        if (playerNames.contains(playerName)) {
-            return false;
-        }
-        Player newPlayer;
-        if (players.isEmpty()) {
+        synchronized (playerLock) {
+            if (playerNames.contains(playerName)) {
+                return false;
+            }
+            Player newPlayer;
+            if (players.isEmpty()) {
             newPlayer = new Player(playerName, true);
-        } else {
-            newPlayer = new Player(playerName, false);
+            } else {
+                newPlayer = new Player(playerName, false);
+            }
+            players.put(playerName, newPlayer);
+            playerNames.add(playerName);
+            return true;
         }
-        players.put(playerName, newPlayer);
-        playerNames.add(playerName);
-        return true;
     }
     public Player getPlayerByName(String playerName) {
         return players.get(playerName);
     }
     public boolean startGameThread() {
-        if(gt != null && gt.isAlive()) {
-            return false; // Game thread is already running
+        synchronized (playerLock) {
+            if(gt != null && gt.isAlive()) {
+                return false; // Game thread is already running
+            }
+            gt = new Thread(gameThread);
+            gt.start();
+            return true;
         }
-        gt = new Thread(gameThread);
-        gt.start();
-        return true;
     }
     public void startRound(RoundsType roundType) {
         synchronized (lock) {
@@ -171,6 +177,22 @@ public class GameData {
             voteScores.put(currentPair, voteScores.get(currentPair) + score);
         }
     }
-    public void displayScores() {
+    public void roundScores() {
+        synchronized (lock) {
+            RoundsType roundType = round.getRoundType();
+            for (QAPair pair : voteScores.keySet()) {
+                switch (roundType) {
+                    case ONE:
+                        players.get(pair.getAnswerer()).addPoints(voteScores.get(pair).intValue());
+                        players.get(pair.getQuestioner()).addPoints(voteScores.get(pair).intValue()/2);
+                        break;
+                    case TWO:
+                        players.get(pair.getQuestioner()).addPoints(voteScores.get(pair).intValue());
+                        players.get(pair.getAnswerer()).addPoints(voteScores.get(pair).intValue()/2);
+                        break;
+                }
+            }
+            // Logic here to send the updated scores to all clients
+        }
     }
 }

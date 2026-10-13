@@ -28,7 +28,7 @@ public class GameThread implements Runnable {
             sleepWait(15);
             gameData.nextVote();
         }
-        gameData.displayScores();
+        gameData.roundScores();
         sleepWait(15);
         return true;
     }
@@ -36,8 +36,12 @@ public class GameThread implements Runnable {
         try {
             Thread.sleep(seconds * 1000);
         } catch (InterruptedException e) {
+            System.out.println("Clients are ready!");
         }
     }
     public void interruptThread() {
+        if (gameThread != null && gameThread.isAlive()) {
+            gameThread.interrupt();
+        }
     }
 }
