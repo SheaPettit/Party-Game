@@ -22,6 +22,7 @@ public class QAPair implements Serializable {
             questioned = false;
         }
     }
+    //Make it so assignment of player can be done first, than have another method for assignment of response
     public void completeQA(String response, String playerName) {
         if(round == RoundsType.ONE) {
             if (answered) return;

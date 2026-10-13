@@ -204,6 +204,7 @@ public class GameData {
         }
     }
     private void pairPlayers() {
+        //Change logic in here to make the pairings not only message the target for the paring, but to also assign the pair in round/QAPair
         List<String> shuffledPlayerNames = new ArrayList<>(playerNames);
         for (int i = shuffledPlayerNames.size() - 1; i > 0; i--) {
             int n = random.nextInt(i + 1);

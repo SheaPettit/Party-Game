@@ -19,8 +19,11 @@ public class Round {
         this.answerPlayer = new HashMap<>();
         this.qaPairs = new ArrayList<>();
     }
+
     public boolean allQuestionsWritten() {return (questionPlayer.size() == numPlayers);}
+
     public boolean allAnswersGiven() {return (answerPlayer.size() == numPlayers);}
+
     public void addQAPair(Player player, String response) {
         if(round == RoundsType.ONE) {
             addToMap(questionPlayer, player, response);
@@ -28,6 +31,7 @@ public class Round {
             addToMap(answerPlayer, player, response);
         }
     }
+
     private void addToMap(HashMap<Player, QAPair> map, Player player, String response) {
         if(map.containsKey(player)) {
             throw new IllegalArgumentException("Player has already given a response");
@@ -36,6 +40,8 @@ public class Round {
         map.put(player, qaPair);
         qaPairs.add(qaPair);
     }
+
+    //Make it so assignment of player can be done first, than have another method for assignment of response
     public void finishQAPair(Player player, Player otherPlayer, String response) {
         if(round == RoundsType.ONE) {
             QAPair qapair = questionPlayer.get(otherPlayer);
@@ -47,6 +53,7 @@ public class Round {
             questionPlayer.put(player, qapair);
         }
     }
+
     public QAPair getQAPair(Player player, ResponseType rt) {
         if(rt == ResponseType.QUESTION) {
             return questionPlayer.get(player);
@@ -55,8 +62,11 @@ public class Round {
         }
         throw new IllegalArgumentException("Invalid ResponseType");
     }
+
     public List<QAPair> getPairs() {return new ArrayList<>(qaPairs);}
+
     public RoundsType getRoundType() {return this.round;}
+
     public HashMap<Player, QAPair> getQAPairMap() {
         if(round == RoundsType.ONE) {
             return new HashMap<>(questionPlayer);
