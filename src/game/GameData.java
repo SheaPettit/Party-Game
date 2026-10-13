@@ -3,7 +3,8 @@ package game;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import network.Server;
+import java.util.Random;
+import network.*;
 import players.*;
 import question_answer.QAPair;
 import question_answer.ResponseType;
@@ -25,12 +26,14 @@ public class GameData {
     private boolean phaseOneOver;
     private QAPair currentPair;
     private HashMap<QAPair, Integer> voteScores;
+    private Random random;
     public  GameData(Server server) {
         this.server = server;
         this.players = new HashMap<>();
         this.playerNames = new ArrayList<>();
         this.lock = new Object();
         this.playerLock = new Object();
+        this.random = new Random();
         this.gameThread = new GameThread(this);
         gt = null;
     }   
@@ -96,6 +99,7 @@ public class GameData {
     }
     public void openPart2() {
         synchronized (lock) {
+            pairPlayers();
             switch (round.getRoundType()) {
                 case ONE:
                 answersOpen = true;
@@ -192,7 +196,28 @@ public class GameData {
                         break;
                 }
             }
-            // Logic here to send the updated scores to all clients
+            HashMap<String, Integer> rankings = new HashMap<>();
+            for (String playerName : playerNames) {
+                rankings.put(playerName, players.get(playerName).getPoints());
+            }
+            server.sendToAllClients(new Message(MessageType.RANKINGS, rankings));
+        }
+    }
+    private void pairPlayers() {
+        List<String> shuffledPlayerNames = new ArrayList<>(playerNames);
+        for (int i = shuffledPlayerNames.size() - 1; i > 0; i--) {
+            int n = random.nextInt(i + 1);
+            String temp = shuffledPlayerNames.get(i);
+            shuffledPlayerNames.set(i, shuffledPlayerNames.get(n));
+            shuffledPlayerNames.set(n, temp);
+        }
+        HashMap<Player, QAPair> playerQAPairs = new HashMap<>(round.getQAPairMap());
+        for (int i = 0; i < shuffledPlayerNames.size(); i++) {
+            String targetPlayerName = playerNames.get(i);
+            Player targetPlayer = players.get(targetPlayerName);
+            String otherPlayerName = shuffledPlayerNames.get(i);
+            Message mes = new Message(MessageType.SEND_QA_PAIR, targetPlayerName, otherPlayerName, playerQAPairs.get(targetPlayer));
+            server.sendToClient(targetPlayer, mes);
         }
     }
 }

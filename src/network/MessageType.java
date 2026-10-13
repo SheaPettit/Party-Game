@@ -15,10 +15,12 @@ public enum MessageType {
     NEXT_ROUND,
     NEXT_STEP,
     NEXT_QUESTION,
+    RANKINGS,
     GAME_END,
     CONNECT,
     REQUEST_NAME,
     NAME_RESPONSE,
     INVALID_NAME,
-    VALID_NAME
+    VALID_NAME,
+    SEND_QA_PAIR
 }

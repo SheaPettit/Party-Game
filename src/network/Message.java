@@ -1,14 +1,19 @@
 package network;
 import java.io.Serializable;
+import java.util.HashMap;
 import players.*;
+import question_answer.QAPair;
 
 public class Message implements Serializable {
     private String response;
     private String playerName;
+    private String otherPlayerName;
     private String userInput;
     private MessageType type;
     private Player player;
     private boolean isHost;
+    private QAPair qaPair;
+    private HashMap<String, Integer> voteScores;
 
     public Message(MessageType type, String playerName) {
         this.type = type;
@@ -28,6 +33,18 @@ public class Message implements Serializable {
         this.type = type;
         this.playerName = PlayerName;
         this.userInput = userInput;
+    }
+
+    public Message(MessageType type, String playerName, String otherPlayerName, QAPair qaPair) {
+        this.type = type;
+        this.playerName = playerName;
+        this.otherPlayerName = otherPlayerName;
+        this.qaPair = qaPair;
+    }
+
+    public Message(MessageType type, HashMap<String, Integer> voteScores) {
+        this.type = type;
+        this.voteScores = voteScores;
     }
 
     public String getResponse() {
@@ -52,5 +69,17 @@ public class Message implements Serializable {
 
     public boolean isHost() {
         return isHost;
+    }
+
+    public QAPair getQAPair() {
+        return qaPair;
+    }
+
+    public HashMap<String, Integer> getVoteScores() {
+        return voteScores;
+    }
+    
+    public String getOtherPlayerName() {
+        return otherPlayerName;
     }
 }

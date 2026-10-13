@@ -39,6 +39,16 @@ public class Server{
     public Player getPlayerByName(String playerName) {
         return gameData.getPlayerByName(playerName);
     }
+    public void sendToClient(Player player, Message message) {
+        ClientHandler clientHandler = playerToClient.get(player);
+        if (clientHandler != null) {
+            try {
+                clientHandler.sendMessage(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public void sendToAllClients(Message message) {
         for (ClientHandler clientHandler : playerToClient.values()) {
             try {
@@ -52,5 +62,3 @@ public class Server{
         return gameData.startGameThread();
     }
 }
-    
-

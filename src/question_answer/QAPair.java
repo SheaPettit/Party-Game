@@ -37,4 +37,24 @@ public class QAPair implements Serializable {
     public String getAnswer() {return this.answer.getAnswer();}
     public String getQuestioner() {return this.question.getQuestioner();}
     public String getAnswerer() {return this.answer.getAnswerer();}
+    public String getPlayerOne() {
+        switch(round) {
+            case ONE:
+                return question.getQuestioner();
+            case TWO:
+                return answer.getAnswerer();
+            default:
+                throw new IllegalStateException("Unexpected value: Round " + round);
+        }
+    }
+    public String getPlayerTwo() {
+        switch(round) {
+            case ONE:
+                return answer.getAnswerer();
+            case TWO:
+                return question.getQuestioner();
+            default:
+                throw new IllegalStateException("Unexpected value: Round " + round);
+        }
+    }
 }
