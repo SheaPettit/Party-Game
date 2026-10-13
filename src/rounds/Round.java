@@ -57,4 +57,12 @@ public class Round {
     }
     public List<QAPair> getPairs() {return new ArrayList<>(qaPairs);}
     public RoundsType getRoundType() {return this.round;}
+    public HashMap<Player, QAPair> getQAPairMap() {
+        if(round == RoundsType.ONE) {
+            return new HashMap<>(questionPlayer);
+        } else if(round == RoundsType.TWO) {
+            return new HashMap<>(answerPlayer);
+        }
+        throw new IllegalStateException("Invalid round type");
+    }
 }
