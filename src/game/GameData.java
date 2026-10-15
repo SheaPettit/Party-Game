@@ -215,9 +215,11 @@ public class GameData {
         HashMap<Player, QAPair> playerQAPairs = new HashMap<>(round.getQAPairMap());
         for (int i = 0; i < shuffledPlayerNames.size(); i++) {
             String targetPlayerName = playerNames.get(i);
-            Player targetPlayer = players.get(targetPlayerName);
             String otherPlayerName = shuffledPlayerNames.get(i);
-            Message mes = new Message(MessageType.SEND_QA_PAIR, targetPlayerName, otherPlayerName, playerQAPairs.get(targetPlayer));
+            Player targetPlayer = players.get(targetPlayerName);
+            QAPair pair = playerQAPairs.get(targetPlayer);
+            pair.assignQA(otherPlayerName);
+            Message mes = new Message(MessageType.SEND_QA_PAIR, targetPlayerName, otherPlayerName, pair);
             server.sendToClient(targetPlayer, mes);
         }
     }

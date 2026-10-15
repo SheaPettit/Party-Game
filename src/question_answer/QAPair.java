@@ -23,15 +23,24 @@ public class QAPair implements Serializable {
         }
     }
     //Make it so assignment of player can be done first, than have another method for assignment of response
+    public void assignQA(String playerName) {
+        if(round == RoundsType.ONE) {
+            if (answered) return;
+            this.answer = new Answer(playerName); 
+        } else if(round == RoundsType.TWO) {
+            if (questioned) return;
+            this.question = new Question(playerName);
+        }
+    }
     public void completeQA(String response, String playerName) {
         if(round == RoundsType.ONE) {
             if (answered) return;
-            this.answer = new Answer(response, playerName); 
-            this.answered = true;
+            answer.setAnswer(response, playerName); 
+            answered = true;
         } else if(round == RoundsType.TWO) {
             if (questioned) return;
-            this.question = new Question(response, playerName);
-            this.questioned = true;
+            question.setQuestion(response, playerName); 
+            questioned = true;
         }
     }
     public String getQuestion() {return this.question.getQuestion();}

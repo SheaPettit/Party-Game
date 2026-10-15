@@ -42,9 +42,9 @@ public class Round {
     }
 
     //Make it so assignment of player can be done first, than have another method for assignment of response
-    public void finishQAPair(Player player, Player otherPlayer, String response) {
+    public void finishQAPair(Player player, String response) {
         if(round == RoundsType.ONE) {
-            QAPair qapair = questionPlayer.get(otherPlayer);
+            QAPair qapair = answerPlayer.get(player);
             qapair.completeQA(response, player.getName());
             answerPlayer.put(player, qapair);
         } else if (round == RoundsType.TWO) {
