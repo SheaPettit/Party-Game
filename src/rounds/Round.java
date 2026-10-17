@@ -41,16 +41,24 @@ public class Round {
         qaPairs.add(qaPair);
     }
 
-    //Make it so assignment of player can be done first, than have another method for assignment of response
+    public void assignQAPair(Player player, Player otherPlayer) {
+        if(round == RoundsType.ONE) {
+            QAPair qapair = questionPlayer.get(otherPlayer);
+            qapair.assignQA(player.getName());
+            answerPlayer.put(player, qapair);
+        } else if(round == RoundsType.TWO) {
+            QAPair qapair = answerPlayer.get(otherPlayer);
+            qapair.assignQA(player.getName());
+            questionPlayer.put(player, qapair);
+        }
+    }
     public void finishQAPair(Player player, String response) {
         if(round == RoundsType.ONE) {
             QAPair qapair = answerPlayer.get(player);
             qapair.completeQA(response, player.getName());
-            answerPlayer.put(player, qapair);
         } else if (round == RoundsType.TWO) {
-            QAPair qapair = answerPlayer.get(otherPlayer);
+            QAPair qapair = questionPlayer.get(player);
             qapair.completeQA(response, player.getName());
-            questionPlayer.put(player, qapair);
         }
     }
 

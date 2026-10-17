@@ -11,13 +11,13 @@ public class QAPair implements Serializable {
     public QAPair(String response, String playerName, RoundsType round) {
         this.round = round;
         if(round == RoundsType.ONE) {
-            this.question = new Question(response, playerName);
-            this.answer = null;
+            question = new Question(response, playerName);
+            answer = null;
             answered = false;
             questioned = true;
         } else if(round == RoundsType.TWO) {
-            this.answer = new Answer(response, playerName);
-            this.question = null;
+            answer = new Answer(response, playerName);
+            question = null;
             answered = true;
             questioned = false;
         }
@@ -25,11 +25,11 @@ public class QAPair implements Serializable {
     //Make it so assignment of player can be done first, than have another method for assignment of response
     public void assignQA(String playerName) {
         if(round == RoundsType.ONE) {
-            if (answered) return;
-            this.answer = new Answer(playerName); 
+            if (answered || answer != null) return;
+            answer = new Answer(playerName); 
         } else if(round == RoundsType.TWO) {
-            if (questioned) return;
-            this.question = new Question(playerName);
+            if (questioned || question != null) return;
+            question = new Question(playerName);
         }
     }
     public void completeQA(String response, String playerName) {

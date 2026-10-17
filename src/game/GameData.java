@@ -138,7 +138,7 @@ public class GameData {
         }
     }
     //Phase 2 response (finishing a QAPair)
-    private void addResponse(String playerName, String otherPlayerName, String response, ResponseType rt) {
+    private void finishResponse(String playerName, String response, ResponseType rt) {
         synchronized (lock) {
             if (!phaseOneOver) return;
             switch (rt) {
@@ -148,8 +148,7 @@ public class GameData {
                     if (!answersOpen) return;
             }
             Player player = players.get(playerName);
-            Player otherPlayer = players.get(otherPlayerName);
-            round.finishQAPair(player, otherPlayer, response);
+            round.finishQAPair(player, response);
             switch (rt) {
                 case QUESTION:
                     if (!round.allQuestionsWritten()) return;
@@ -207,18 +206,19 @@ public class GameData {
         //Change logic in here to make the pairings not only message the target for the paring, but to also assign the pair in round/QAPair
         List<String> shuffledPlayerNames = new ArrayList<>(playerNames);
         for (int i = shuffledPlayerNames.size() - 1; i > 0; i--) {
-            int n = random.nextInt(i + 1);
+            int n = random.nextInt(i);
             String temp = shuffledPlayerNames.get(i);
             shuffledPlayerNames.set(i, shuffledPlayerNames.get(n));
             shuffledPlayerNames.set(n, temp);
         }
         HashMap<Player, QAPair> playerQAPairs = new HashMap<>(round.getQAPairMap());
         for (int i = 0; i < shuffledPlayerNames.size(); i++) {
-            String targetPlayerName = playerNames.get(i);
-            String otherPlayerName = shuffledPlayerNames.get(i);
+            String targetPlayerName = shuffledPlayerNames.get(i);
+            String otherPlayerName = playerNames.get(i);
             Player targetPlayer = players.get(targetPlayerName);
-            QAPair pair = playerQAPairs.get(targetPlayer);
-            pair.assignQA(otherPlayerName);
+            Player otherPlayer = players.get(otherPlayerName);
+            round.assignQAPair(targetPlayer, otherPlayer);
+            QAPair pair = playerQAPairs.get(otherPlayer);
             Message mes = new Message(MessageType.SEND_QA_PAIR, targetPlayerName, otherPlayerName, pair);
             server.sendToClient(targetPlayer, mes);
         }
