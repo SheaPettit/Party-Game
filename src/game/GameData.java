@@ -82,6 +82,8 @@ public class GameData {
             }
             votingOpen = false;
             phaseOneOver = false;
+            Message mes = new Message(MessageType.ROUND_STARTED, roundType);
+            server.sendToAllClients(mes);
         }
     }
     public void closePart1() {
@@ -95,6 +97,8 @@ public class GameData {
                     break;
             }
             phaseOneOver = true;
+            Message mes = new Message(MessageType.ROUND_CLOSED);
+            server.sendToAllClients(mes);
         }
     }
     public void openPart2() {
@@ -108,6 +112,8 @@ public class GameData {
                 questionsOpen = true;
                 break;
             }
+            Message mes = new Message(MessageType.ROUND_RESUMED);
+            server.sendToAllClients(mes);
         }
     }
     public void responsesDone() {

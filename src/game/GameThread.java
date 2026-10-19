@@ -19,6 +19,7 @@ public class GameThread implements Runnable {
         gameData.startRound(roundType);
         sleepWait(60);
         gameData.closePart1();
+        sleepWait(5);
         gameData.openPart2();
         sleepWait(90);
         gameData.responsesDone();

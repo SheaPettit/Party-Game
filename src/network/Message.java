@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import players.*;
 import question_answer.QAPair;
+import question_answer.RoundsType;
 
 public class Message implements Serializable {
     private String response;
@@ -10,6 +11,7 @@ public class Message implements Serializable {
     private String otherPlayerName;
     private String userInput;
     private MessageType type;
+    private RoundsType roundType;
     private Player player;
     private boolean isHost;
     private QAPair qaPair;
@@ -27,6 +29,11 @@ public class Message implements Serializable {
     public Message(MessageType type, Player player) {
         this.type = type;
         this.player = player;
+    }
+
+    public Message(MessageType type, RoundsType roundType) {
+        this.type = type;
+        this.roundType = roundType;
     }
 
     public Message(MessageType type, String PlayerName, String userInput) {
@@ -81,5 +88,9 @@ public class Message implements Serializable {
     
     public String getOtherPlayerName() {
         return otherPlayerName;
+    }
+    
+    public RoundsType getRoundType() {
+        return roundType;
     }
 }
