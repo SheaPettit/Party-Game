@@ -29,7 +29,7 @@ public class CLI extends AbstractUI {
     public void hostStartUI() {
     }
 
-    public void gameStartUI() {
+    public void gameStartUI(boolean isHost) {
         System.out.println("Game started!");
     }
 

@@ -14,11 +14,13 @@ public class ClientHandler implements Runnable{
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private boolean connected;
+    private boolean inLobby;
 
     public ClientHandler(Socket clientSocket, Server server) {
         this.clientSocket = clientSocket;
         this.server = server;
         this.connected = true;
+        this.inLobby = false;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class ClientHandler implements Runnable{
                 Message fromClient = (Message) ois.readObject();
                 switch (fromClient.getType()) {
                     case NAME_RESPONSE:
+                        if(inLobby) continue;
                         String playerName = fromClient.getPlayerName();
                         if(server.addPlayer(playerName, this)) {
                             message = new Message(MessageType.VALID_NAME, server.getPlayerByName(playerName));
@@ -46,6 +49,7 @@ public class ClientHandler implements Runnable{
                             oos.writeObject(message);
                         }
                         if(message.getType() == MessageType.VALID_NAME) {
+                            inLobby = true;
                             System.out.println("Player " + playerName + " has joined the game.");
                         } else {
                             System.out.println("Player " + playerName + " attempted to join with an invalid name.");

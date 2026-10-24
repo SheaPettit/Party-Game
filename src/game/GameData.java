@@ -120,6 +120,8 @@ public class GameData {
         synchronized (lock) {
             questionsOpen = false;
             answersOpen = false;
+            Message mes = new Message(MessageType.RESPONSES_DONE);
+            server.sendToAllClients(mes);
         }
     }
     //Phase 1 response (Starting a QAPair)

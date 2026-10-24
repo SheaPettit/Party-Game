@@ -34,6 +34,7 @@ public class Client{
                 break;
         }
         input = "";
+        userInputReady = false;
     }
     public void Connect() throws IOException{
         System.out.println("Client is running...");
@@ -52,9 +53,10 @@ public class Client{
                         ui.invalidNameUI();
                     case MessageType.REQUEST_NAME:
                         ui.requestNameUI();
-                        while(!input.isEmpty()){Thread.sleep(10);}
+                        while(!userInputReady){Thread.sleep(100);}
                         message = new Message(MessageType.NAME_RESPONSE, input);
                         oos.writeObject(message);
+                        userInputReady = false;
                         break;
                     case MessageType.VALID_NAME:
                         ui.validNameUI();
@@ -64,9 +66,10 @@ public class Client{
                         break;
                 }
             }
+            ui.gameStartUI(isHost);
             if(isHost) {
                 while("start".compareTo(input.toLowerCase()) != 0) {
-                    ui.hostStartUI();
+                    Thread.sleep(100);
                 }
                 message = new Message(MessageType.START);
                 oos.writeObject(message);
@@ -75,7 +78,7 @@ public class Client{
             while(cont) {
                 fromServer = (Message) ois.readObject();
                 if(fromServer.getType() != MessageType.START) continue;
-                ui.gameStartUI();
+                // use the method to get to the game ui ready for starting.
                 cont = false;
             }
             ui.qa1UI();

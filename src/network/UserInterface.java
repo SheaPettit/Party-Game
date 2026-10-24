@@ -8,8 +8,7 @@ public interface UserInterface {
     public void requestNameUI();
     public void invalidNameUI();
     public void validNameUI();
-    public void hostStartUI();
-    public void gameStartUI();
+    public void gameStartUI(boolean isHost);
     public void qa1UI();
     public void qa2UI(QAPair qaPair);
     public void voteUI(QAPair qaPair);
