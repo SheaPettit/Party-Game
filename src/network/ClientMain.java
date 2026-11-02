@@ -16,6 +16,7 @@ public class ClientMain {
             uiType = UIType.GUI;
         if(args.length > 1)
             serverAddress = args[1];
+        System.out.println("Joining Server Address: " + serverAddress);
         Client client = new Client(uiType, serverAddress);
         try {
             client.Connect();
