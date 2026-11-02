@@ -8,6 +8,7 @@ import players.*;
 
 public class Client{
     private Socket socket;
+    private String serverAddress;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private Player player;
@@ -15,7 +16,8 @@ public class Client{
     private UserInterface ui;
     private volatile boolean userInputReady;
     private String input;
-    public Client(UIType uiType) {
+    public Client(UIType uiType, String serverAddress) {
+        this.serverAddress = serverAddress;
         socket = null;
         ois = null;
         oos = null;
@@ -40,7 +42,7 @@ public class Client{
         System.out.println("Client is running...");
         ui.buildUI();
         try {
-            socket = new Socket("localhost", 8080);
+            socket = new Socket(serverAddress, 8080);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             boolean cont = true;
